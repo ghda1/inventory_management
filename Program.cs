@@ -1,10 +1,8 @@
-﻿public record Item
+﻿class Item
 {
     private string itemName;
     private int itemQuantity = 0;
-    private DateTime creadtedDate;
-
-    public static int itemAmount;
+    private string creadtedDate;
 
     public string ItemName
     {
@@ -42,26 +40,9 @@
         }
     }
     public DateTime CreadtedDate { get; set; }
-    public int ItemAmount
-    {
-        get
-        {
-            return itemAmount;
-        }
-        set
-        {
-            if (value < 0)
-            {
-                throw new Exception("The Item Amount Should Not be Negative!");
-            }
-            else
-            {
-                itemAmount = value;
-            }
-        }
-    }
+
     // new Item("coffee", -20, default)
-    public Item(string name, int quantity, params DateTime[] createdDate)
+    public Item(string name, int quantity)
     {
         if (string.IsNullOrEmpty(name))
         {
@@ -79,10 +60,8 @@
         {
             ItemQuantity = quantity;
         }
-        foreach (DateTime date in createdDate)
-        {
-            CreadtedDate = date;
-        }
+        creadtedDate = DateTime.Now.ToShortDateString();
+
     }
 }
 
@@ -96,7 +75,7 @@ class Store
     }
     public void AddItem(Item newItem)
     {
-        if (MaxCapactity >= newItem.ItemQuantity + itemsList.Count())
+        if (MaxCapactity >= newItem.ItemQuantity + GetCurrentVolume())
         {
             var itemFound = itemsList.FirstOrDefault(item => item.ItemName == newItem.ItemName);
             if (itemFound == null)
@@ -113,7 +92,7 @@ class Store
         }
         else
         {
-            Console.WriteLine($"You have already reach the maximum capacity!");
+            Console.WriteLine($"The item quantity you trying to add reach the maximum capacity!");
 
         }
     }
@@ -133,17 +112,22 @@ class Store
 
     public int GetCurrentVolume()
     {
-        return itemsList.Count();
+        int volume = 0;
+        foreach (var item in itemsList)
+        {
+            volume += item.ItemQuantity;
+        }
+        return volume;
     }
-    public void Display()
+    public void Display(List<Item> itemsList)
     {
         foreach (var item in itemsList)
         {
-            Console.WriteLine($"{item}");
+            Console.WriteLine($"item name: {item.ItemName}, item quantity: {item.ItemQuantity}, created date: {item.CreadtedDate}");
         }
         if (itemsList.Count == 0)
         {
-            Console.WriteLine($"Text");
+            Console.WriteLine($"The store is empty!!");
         }
     }
 
@@ -166,30 +150,17 @@ class Store
         var sortedItem = itemsList.OrderBy(item => item.ItemName);
         foreach (var item in sortedItem)
         {
-            Console.WriteLine($"Sorted items in ascending order: {item}");
+            Console.WriteLine($"Sorting Items: item name: {item.ItemName}, item quantity: {item.ItemQuantity}, created date: {item.CreadtedDate}");
 
         }
+    }
+    public void GroupByDate()
+    {
     }
     public static void Main(string[] args)
     {
         Store store = new Store(100);
 
-        var waterBottle = new Item("Water Bottle", 10, new DateTime(2023, 1, 1));
-        store.AddItem(waterBottle);
-        var chocolateBar = new Item("Chocolate Bar", 15, new DateTime(2023, 2, 1));
-        store.AddItem(chocolateBar);
-        var notebook = new Item("Notebook", 5, new DateTime(2023, 3, 1));
-        store.AddItem(notebook);
-        var pen = new Item("Pen", 20, new DateTime(2023, 4, 1));
-        store.AddItem(pen);
-        var tissuePack = new Item("Tissue Pack", 30, new DateTime(2023, 5, 1));
-        store.AddItem(tissuePack);
-        var chipsBag = new Item("Chips Bag", 25, new DateTime(2023, 6, 1));
-        store.AddItem(chipsBag);
-        var sodaCan = new Item("Soda Can", 8, new DateTime(2023, 7, 1));
-        store.AddItem(sodaCan);
-        var soap = new Item("Soap", 12, new DateTime(2023, 8, 1));
-        store.AddItem(soap);
         var coffee = new Item("Coffee", 20);
         store.AddItem(coffee);
         var sandwich = new Item("Sandwich", 15);
@@ -200,7 +171,13 @@ class Store
         store.AddItem(umbrella);
         var sunscreen = new Item("Sunscreen", 8);
         store.AddItem(sunscreen);
-        store.Display();
+        store.Display(store.itemsList);
+        Console.WriteLine($"Total item: {store.GetCurrentVolume()}");
+        store.DeletItem("Sunscreen");
+        Console.WriteLine($"Total item: {store.GetCurrentVolume()}");
+        store.FindItemByName("water");
+        store.SortByNameAsc();
+
 
 
     }
