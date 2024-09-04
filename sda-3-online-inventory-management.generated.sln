@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory", "Inventory.csproj", "{E964D786-E30B-4EB8-BC2C-689A9D881FF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory", "Inventory.csproj", "{1BB75581-FCD3-4F8F-BE30-92DEB07921E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E964D786-E30B-4EB8-BC2C-689A9D881FF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E964D786-E30B-4EB8-BC2C-689A9D881FF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E964D786-E30B-4EB8-BC2C-689A9D881FF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E964D786-E30B-4EB8-BC2C-689A9D881FF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BB75581-FCD3-4F8F-BE30-92DEB07921E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BB75581-FCD3-4F8F-BE30-92DEB07921E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BB75581-FCD3-4F8F-BE30-92DEB07921E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BB75581-FCD3-4F8F-BE30-92DEB07921E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
