@@ -141,39 +141,28 @@ class Store
 
     public void SortByNameAsc(List<Item> itemsList)
     {
-        var sortedItembyName = itemsList.OrderBy(item => item.ItemName);
-        foreach (var item in sortedItembyName)
-        {
-            Console.WriteLine($"Sorting Items Based On Names: item name: {item.ItemName}, item quantity: {item.ItemQuantity}, created date: {item.CreadtedDate}");
+        var sortedItembyName = itemsList.OrderBy(item => item.ItemName).ToList();
+        Console.WriteLine("\nSorting items based on name: ");
 
-        }
+        Display(sortedItembyName);
     }
     public void SortByDate(List<Item> itemsList)
     {
-        var sortedItemByDate = itemsList.OrderBy(item => item.CreadtedDate); //sorted Asc
-        foreach (var item in sortedItemByDate)
-        {
-            Console.WriteLine($"Sorting Items Based On Date: item name: {item.ItemName}, item quantity: {item.ItemQuantity}, created date: {item.CreadtedDate}");
-        }
+        var sortedItemByDate = itemsList.OrderBy(item => item.CreadtedDate).ToList(); //sorted Asc
+        Console.WriteLine("\nSorting items based on date:");
+
+        Display(sortedItemByDate);
 
     }
     public void GroupByDate(List<Item> itemsList)
     {
         DateTime threeMonthAgo = DateTime.Now.AddMonths(-3);
-        var oldItems = itemsList.Where(item => item.CreadtedDate < threeMonthAgo);
+        var oldItems = itemsList.Where(item => item.CreadtedDate < threeMonthAgo).ToList();
         Console.WriteLine($"\nOld Items: ");
-        foreach (var item in oldItems)
-        {
-            Console.WriteLine($"item name: {item.ItemName}, item quantity: {item.ItemQuantity}, created date: {item.CreadtedDate}");
-
-        }
-        var newItems = itemsList.Where(item => item.CreadtedDate >= threeMonthAgo);
+        Display(oldItems);
+        var newItems = itemsList.Where(item => item.CreadtedDate >= threeMonthAgo).ToList();
         Console.WriteLine($"\n \nNew Arrival Items:");
-        foreach (var item in newItems)
-        {
-            Console.WriteLine($"item name: {item.ItemName}, item quantity: {item.ItemQuantity}, created date: {item.CreadtedDate}");
-
-        }
+        Display(newItems);
     }
     public static void Main(string[] args)
     {
@@ -199,10 +188,10 @@ class Store
         store.DeletItem("Pen");
         store.FindItemByName("Umbrella");
         store.FindItemByName("Pen");
-       Console.WriteLine($"Total : {store.GetCurrentVolume(store.itemsList)}");
-       store.Display(store.itemsList);
-       store.SortByNameAsc(store.itemsList);
-       store.SortByDate(store.itemsList);
-       store.GroupByDate(store.itemsList);
+        Console.WriteLine($"Total : {store.GetCurrentVolume(store.itemsList)}");
+        store.Display(store.itemsList);
+        store.SortByNameAsc(store.itemsList);
+        store.SortByDate(store.itemsList);
+        store.GroupByDate(store.itemsList);
     }
 }
