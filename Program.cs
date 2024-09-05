@@ -37,7 +37,7 @@
     }
     public DateTime CreadtedDate { get; set; }
 
-    public Item(string name, int quantity, DateTime createdDate)
+    public Item(string name, int quantity, DateTime? createdDate = null)
     {
         if (string.IsNullOrEmpty(name))
         {
@@ -55,7 +55,7 @@
         {
             ItemQuantity = quantity;
         }
-        CreadtedDate = createdDate;
+        CreadtedDate = createdDate ?? DateTime.Now;
 
     }
 }
@@ -139,7 +139,7 @@ class Store
         }
     }
 
-    public void SortByNameAsc(List<Item> itemsList)
+    public void SortByName(List<Item> itemsList)
     {
         var sortedItembyName = itemsList.OrderBy(item => item.ItemName).ToList();
         Console.WriteLine("\nSorting items based on name: ");
@@ -157,24 +157,34 @@ class Store
     public void GroupByDate(List<Item> itemsList)
     {
         DateTime threeMonthAgo = DateTime.Now.AddMonths(-3);
-        var oldItems = itemsList.Where(item => item.CreadtedDate < threeMonthAgo).ToList();
         Console.WriteLine($"\nOld Items: ");
-        Display(oldItems);
-        var newItems = itemsList.Where(item => item.CreadtedDate >= threeMonthAgo).ToList();
+        foreach (var oldItems in itemsList.Where(item => item.CreadtedDate < threeMonthAgo).GroupBy(item => item.CreadtedDate).ToList())
+        {
+            foreach (var oldItem in oldItems)
+            {
+                Console.WriteLine($"item name: {oldItem.ItemName}, item quantity: {oldItem.ItemQuantity}, created date: {oldItem.CreadtedDate}");
+            }
+        }
         Console.WriteLine($"\n \nNew Arrival Items:");
-        Display(newItems);
+        foreach (var newItems in itemsList.Where(item => item.CreadtedDate >= threeMonthAgo).GroupBy(item => item.CreadtedDate).ToList())
+        {
+            foreach (var newItem in newItems)
+            {
+                Console.WriteLine($"item name: {newItem.ItemName}, item quantity: {newItem.ItemQuantity}, created date: {newItem.CreadtedDate}");
+            }
+        }
     }
     public static void Main(string[] args)
     {
         Store store = new Store(400);
 
-        var coffee = new Item("Coffee", 20, DateTime.Now);
+        var coffee = new Item("Coffee", 20);
         store.AddItem(coffee);
-        var sandwich = new Item("Sandwich", 15, DateTime.Now);
+        var sandwich = new Item("Sandwich", 15);
         store.AddItem(sandwich);
-        var batteries = new Item("Batteries", 10, DateTime.Now);
+        var batteries = new Item("Batteries", 10);
         store.AddItem(batteries);
-        var umbrella = new Item("Umbrella", 5, DateTime.Now);
+        var umbrella = new Item("Umbrella", 5);
         store.AddItem(umbrella);
         var waterBottle = new Item("Water Bottle", 10, new DateTime(2023, 1, 1));
         store.AddItem(waterBottle);
@@ -190,7 +200,7 @@ class Store
         store.FindItemByName("Pen");
         Console.WriteLine($"Total : {store.GetCurrentVolume(store.itemsList)}");
         store.Display(store.itemsList);
-        store.SortByNameAsc(store.itemsList);
+        store.SortByName(store.itemsList);
         store.SortByDate(store.itemsList);
         store.GroupByDate(store.itemsList);
     }
