@@ -70,27 +70,21 @@ class Store
     }
     public void AddItem(Item newItem)
     {
-        if (MaxCapactity >= newItem.ItemQuantity + GetCurrentVolume(itemsList))
-        {
-            var itemFound = itemsList.Any(item => item.ItemName == newItem.ItemName);
-            if (!itemFound)
-            {
-                itemsList.Add(newItem);
-                Console.WriteLine($"\"{newItem.ItemName}\" item was added successfully");
-
-            }
-            else
-            {
-                Console.WriteLine($"There is an item having the same name \"{newItem.ItemName}\"");
-
-            }
-        }
-        else
+        if (MaxCapactity < newItem.ItemQuantity + GetCurrentVolume(itemsList))
         {
             Console.WriteLine($"The item quantity of \"{newItem.ItemName}\" you trying to add reach the maximum capacity!");
-
+            return;
         }
+        if (itemsList.Any(item => item.ItemName == newItem.ItemName))
+        {
+            Console.WriteLine($"There is an item having the same name \"{newItem.ItemName}\"");
+            return;
+        }
+
+        itemsList.Add(newItem);
+        Console.WriteLine($"\"{newItem.ItemName}\" item was added successfully");
     }
+
     public void DeletItem(string name)
     {
         var itemBasedOnName = itemsList.FirstOrDefault(item => item.ItemName == name);
@@ -112,16 +106,15 @@ class Store
     }
     public void Display(List<Item> itemsList)
     {
-        if (itemsList.Count != 0)
-        {
-            foreach (var item in itemsList)
-            {
-                Console.WriteLine($"item name: {item.ItemName}, item quantity: {item.ItemQuantity}, created date: {item.CreadtedDate}");
-            }
-        }
-        else
+        if (itemsList.Count == 0)
         {
             Console.WriteLine($"The store is empty!!");
+            return;
+        }
+
+        foreach (var item in itemsList)
+        {
+            Console.WriteLine($"item name: {item.ItemName}, item quantity: {item.ItemQuantity}, created date: {item.CreadtedDate}");
         }
     }
 
@@ -143,36 +136,25 @@ class Store
     {
         var sortedItembyName = itemsList.OrderBy(item => item.ItemName).ToList();
         Console.WriteLine("\nSorting items based on name: ");
-
         Display(sortedItembyName);
     }
     public void SortByDate(List<Item> itemsList)
     {
         var sortedItemByDate = itemsList.OrderBy(item => item.CreadtedDate).ToList(); //sorted Asc
         Console.WriteLine("\nSorting items based on date:");
-
         Display(sortedItemByDate);
 
     }
-    public void GroupByDate(List<Item> itemsList)
+    public IEnumerable<IGrouping<string, Item>> GroupByDate()
     {
-        DateTime threeMonthAgo = DateTime.Now.AddMonths(-3);
-        Console.WriteLine($"\nOld Items: ");
-        foreach (var oldItems in itemsList.Where(item => item.CreadtedDate < threeMonthAgo).GroupBy(item => item.CreadtedDate).ToList())
-        {
-            foreach (var oldItem in oldItems)
-            {
-                Console.WriteLine($"item name: {oldItem.ItemName}, item quantity: {oldItem.ItemQuantity}, created date: {oldItem.CreadtedDate}");
-            }
-        }
-        Console.WriteLine($"\n \nNew Arrival Items:");
-        foreach (var newItems in itemsList.Where(item => item.CreadtedDate >= threeMonthAgo).GroupBy(item => item.CreadtedDate).ToList())
-        {
-            foreach (var newItem in newItems)
-            {
-                Console.WriteLine($"item name: {newItem.ItemName}, item quantity: {newItem.ItemQuantity}, created date: {newItem.CreadtedDate}");
-            }
-        }
+        var now = DateTime.Now;
+        var threeMonthAgo = now.AddMonths(-3);
+
+        var groupedByDate = itemsList.GroupBy(item => item.CreadtedDate >= threeMonthAgo
+        ? "New Arrival:"
+        : "Old:");
+
+        return groupedByDate;
     }
     public static void Main(string[] args)
     {
@@ -194,6 +176,8 @@ class Store
         store.AddItem(notebook);
         var pen = new Item("Pen", 20, new DateTime(2023, 4, 1));
         store.AddItem(pen);
+        Console.WriteLine($"");
+
         store.Display(store.itemsList);
         store.DeletItem("Pen");
         store.FindItemByName("Umbrella");
@@ -202,6 +186,16 @@ class Store
         store.Display(store.itemsList);
         store.SortByName(store.itemsList);
         store.SortByDate(store.itemsList);
-        store.GroupByDate(store.itemsList);
+
+        var groupedByDate = store.GroupByDate();
+        foreach (var group in groupedByDate)
+        {
+            Console.WriteLine($"\n{group.Key}");
+            foreach (var item in group)
+            {
+                Console.WriteLine($"item name: {item.ItemName}, item quantity: {item.ItemQuantity}, created date: {item.CreadtedDate}");
+
+            }
+        }
     }
 }
